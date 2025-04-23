@@ -1,0 +1,49 @@
+.board {
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 16px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03);
+  transition: box-shadow 0.2s ease;
+}
+
+.board:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+}
+
+.board-title {
+  font-size: 18px;
+  margin-bottom: 12px;
+  border-bottom: 2px solid #007bff;
+  padding-bottom: 4px;
+  color: #2c3e50;
+}
+
+.board-posts {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.board-post {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 4px;
+  border-bottom: 1px solid #eee;
+  transition: background-color 0.2s ease;
+}
+
+.board-post:hover {
+  background-color: #f9f9f9;
+}
+
+.post-title {
+  font-weight: 500;
+  color: #333;
+}
+
+.post-meta {
+  font-size: 12px;
+  color: #888;
+}
