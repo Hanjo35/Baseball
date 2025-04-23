@@ -6,6 +6,7 @@ export default function Board({ title }) {
   const navigate = useNavigate();
   const { posts } = useContext(PostContext);
   const dynamicPosts = posts[title];
+  if (!dynamicPosts) return <div>게시판을 찾을 수 없습니다.</div>;
 
   const handleWrite = () => {
     navigate("/write");

@@ -1,4 +1,4 @@
-// src/context/PostContext.js
+// src/context/PostContext.jsx
 import { createContext, useState } from "react";
 
 export const PostContext = createContext();
@@ -12,14 +12,26 @@ export function PostProvider({ children }) {
   });
 
   const addPost = (category, post) => {
+    const newPost = { ...post, comments: [] };
     setPosts((prev) => ({
       ...prev,
-      [category]: [...prev[category], post],
+      [category]: [...prev[category], newPost],
     }));
   };
 
+  const addComment = (category, index, comment) => {
+    setPosts((prev) => {
+      const updated = [...prev[category]];
+      updated[index].comments.push(comment);
+      return {
+        ...prev,
+        [category]: updated,
+      };
+    });
+  };
+
   return (
-    <PostContext.Provider value={{ posts, addPost }}>
+    <PostContext.Provider value={{ posts, addPost, addComment }}>
       {children}
     </PostContext.Provider>
   );

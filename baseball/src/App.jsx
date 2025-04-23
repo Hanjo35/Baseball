@@ -12,22 +12,22 @@ import { PostProvider } from "./context/PostContext";
 import "./styles.css";
 
 export default function App() {
-  const mlbPosts = [
+  const MLB = [
     { title: "이정후 연타석 홈런 작렬!", comments: 8, views: 2340 },
     { title: "오타니 홈런!", comments: 14, views: 5321 },
   ];
 
-  const kboPosts = [
+  const KBO = [
     { title: "키움 잘 좀 해봐", comments: 9, views: 4210 },
     { title: "한화 이번엔 가을 갈까요?", comments: 6, views: 1987 },
   ];
 
-  const news = [
+  const NEWS = [
     { title: "LG 5연승 질주", comments: 9, views: 4210 },
     { title: "한화 연승가도 언제까지 이어질까", comments: 6, views: 1987 },
   ];
 
-  const others = [
+  const OTHERS = [
     { title: "카리나 이쁘네요", comments: 9, views: 4210 },
     { title: "민지가 더 이쁜 듯", comments: 6, views: 1987 },
   ];
@@ -39,12 +39,12 @@ export default function App() {
         <TopBanner />
         <Routes>
           <Route path="/" element={<MainNews />} />
-          <Route path="/mlb" element={<Board title="MLB" posts={mlbPosts} />} />
-          <Route path="/kbo" element={<Board title="KBO" posts={kboPosts} />} />
-          <Route path="/news" element={<Board title="NEWS" posts={news} />} />
+          <Route path="/mlb" element={<Board title="MLB" />} />
+          <Route path="/kbo" element={<Board title="KBO" />} />
+          <Route path="/news" element={<Board title="NEWS" />} />
           <Route
             path="/others"
-            element={<Board title="OTHERS" posts={others} />}
+            element={<Board title="OTHERS" posts={OTHERS} />}
           />
           <Route path="/post/:id" element={<PostDetail />} />
         </Routes>
