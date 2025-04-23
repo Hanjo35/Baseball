@@ -8,7 +8,6 @@ import Board from "./components/Board";
 import RightBanner from "./components/RightBanner";
 import PostDetail from "./pages/PostDetail";
 import { PostProvider } from "./context/PostContext";
-
 import "./styles.css";
 
 export default function App() {
@@ -33,23 +32,22 @@ export default function App() {
   ];
 
   return (
-    <BrowserRouter>
-      <div className="app-layout">
-        <Header />
-        <TopBanner />
-        <Routes>
-          <Route path="/" element={<MainNews />} />
-          <Route path="/mlb" element={<Board title="MLB" />} />
-          <Route path="/kbo" element={<Board title="KBO" />} />
-          <Route path="/news" element={<Board title="NEWS" />} />
-          <Route
-            path="/others"
-            element={<Board title="OTHERS" posts={OTHERS} />}
-          />
-          <Route path="/post/:id" element={<PostDetail />} />
-        </Routes>
-        <RightBanner />
-      </div>
-    </BrowserRouter>
+    <PostProvider>
+      <BrowserRouter>
+        <div className="app-layout">
+          <Header />
+          <TopBanner />
+          <Routes>
+            <Route path="/" element={<MainNews />} />
+            <Route path="/mlb" element={<Board title="MLB" />} />
+            <Route path="/kbo" element={<Board title="KBO" />} />
+            <Route path="/news" element={<Board title="NEWS" />} />
+            <Route path="/others" element={<Board title="OTHERS" />} />
+            <Route path="/post/:id" element={<PostDetail />} />
+          </Routes>
+          <RightBanner />
+        </div>
+      </BrowserRouter>
+    </PostProvider>
   );
 }
