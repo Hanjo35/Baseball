@@ -7,40 +7,39 @@ export default function PostDetail() {
   const { posts, addComment } = useContext(PostContext);
   const [commentInput, setCommentInput] = useState("");
 
-  // 카테고리 및 인덱스 추출
   const categories = Object.keys(posts);
-  let foundPost = null;
+  let post = null;
   let categoryKey = null;
   let postIndex = null;
 
-  for (let cat of categories) {
-    const index = posts[cat].findIndex((_, idx) => idx + 1 === Number(id));
+  for (let key of categories) {
+    const index = posts[key].findIndex((_, idx) => idx + 1 === Number(id));
     if (index !== -1) {
-      foundPost = posts[cat][index];
-      categoryKey = cat;
+      post = posts[key][index];
+      categoryKey = key;
       postIndex = index;
       break;
     }
   }
 
-  if (!foundPost) return <div>게시글을 찾을 수 없습니다.</div>;
+  if (!post) return <div>게시글을 찾을 수 없습니다.</div>;
 
   const handleAddComment = () => {
-    if (commentInput.trim() === "") return;
+    if (!commentInput.trim()) return;
     addComment(categoryKey, postIndex, commentInput);
     setCommentInput("");
   };
 
   return (
     <div className="post-detail">
-      <h2>{foundPost.title}</h2>
-      <p>{foundPost.content}</p>
-      <p>조회수: {foundPost.views}</p>
+      <h2>{post.title}</h2>
+      <p>{post.content}</p>
+      <p>조회수: {post.views}</p>
 
       <hr />
-      <h3>댓글</h3>
+      <h3>💬 댓글</h3>
       <ul>
-        {foundPost.comments.map((cmt, idx) => (
+        {post.comments.map((cmt, idx) => (
           <li key={idx}>🗨️ {cmt}</li>
         ))}
       </ul>
@@ -50,7 +49,7 @@ export default function PostDetail() {
         onChange={(e) => setCommentInput(e.target.value)}
         placeholder="댓글을 입력하세요"
         rows={3}
-        style={{ width: "100%", marginTop: "10px" }}
+        style={{ width: "100%", marginTop: "12px" }}
       />
       <button onClick={handleAddComment} style={{ marginTop: "8px" }}>
         댓글 작성

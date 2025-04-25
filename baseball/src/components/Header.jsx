@@ -1,19 +1,59 @@
 // src/components/Header.jsx
-import React from "react";
+import React, { useContext } from "react";
 import { Link } from "react-router-dom";
+import { UserContext } from "../context/UserContext";
 
 export default function Header() {
+  const { user, logout } = useContext(UserContext);
+
   return (
     <header className="header">
-      <div className="logo">SPORTSPARK</div>
-      <nav className="nav">
-        <Link to="/">홈</Link>
-        <Link to="/mlb">MLB</Link>
-        <Link to="/kbo">KBO</Link>
-        <Link to="/news">뉴스</Link>
-        <Link to="/others">자유게시판</Link>
-        <Link to="/login">로그인</Link>
-      </nav>
+      <div className="header-container">
+        <div className="logo">SPORTSPARK</div>
+        <nav className="nav">
+          <ul className="nav-list">
+            <li>
+              <Link to="/">홈</Link>
+            </li>
+            <li>
+              <Link to="/mlb">MLB</Link>
+            </li>
+            <li>
+              <Link to="/npb">NPB</Link>
+            </li>
+            <li>
+              <Link to="/kbo">KBO</Link>
+            </li>
+            <li>
+              <Link to="/news">뉴스</Link>
+            </li>
+            <li>
+              <Link to="/others">자유게시판</Link>
+            </li>
+            {user ? (
+              <>
+                <li className="welcome-message">
+                  {user.nickname}님 환영합니다
+                </li>
+                <li>
+                  <button onClick={logout} className="logout-button">
+                    로그아웃
+                  </button>
+                </li>
+              </>
+            ) : (
+              <>
+                <li>
+                  <Link to="/login">로그인</Link>
+                </li>
+                <li>
+                  <Link to="/signup">회원가입</Link>
+                </li>
+              </>
+            )}
+          </ul>
+        </nav>
+      </div>
     </header>
   );
 }

@@ -6,6 +6,7 @@ export const PostContext = createContext();
 export function PostProvider({ children }) {
   const [posts, setPosts] = useState({
     MLB: [],
+    NPB: [],
     KBO: [],
     NEWS: [],
     OTHERS: [],

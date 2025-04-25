@@ -1,14 +1,19 @@
 // src/App.jsx
 import React from "react";
+import "./styles.css";
+
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { UserProvider } from "./context/UserContext";
+import { PostProvider } from "./context/PostContext";
+
 import Header from "./components/Header";
 import TopBanner from "./components/TopBanner";
 import MainNews from "./components/MainNews";
 import Board from "./components/Board";
 import RightBanner from "./components/RightBanner";
 import PostDetail from "./pages/PostDetail";
-import { PostProvider } from "./context/PostContext";
-import "./styles.css";
+import LoginPage from "./pages/LoginPage";
+import SignUpPage from "./pages/SignUpPage";
 
 export default function App() {
   const MLB = [
@@ -32,22 +37,27 @@ export default function App() {
   ];
 
   return (
-    <PostProvider>
-      <BrowserRouter>
-        <div className="app-layout">
-          <Header />
-          <TopBanner />
-          <Routes>
-            <Route path="/" element={<MainNews />} />
-            <Route path="/mlb" element={<Board title="MLB" />} />
-            <Route path="/kbo" element={<Board title="KBO" />} />
-            <Route path="/news" element={<Board title="NEWS" />} />
-            <Route path="/others" element={<Board title="OTHERS" />} />
-            <Route path="/post/:id" element={<PostDetail />} />
-          </Routes>
-          <RightBanner />
-        </div>
-      </BrowserRouter>
-    </PostProvider>
+    <UserProvider>
+      <PostProvider>
+        <BrowserRouter>
+          <div className="app-layout">
+            <Header />
+            <TopBanner />
+            <Routes>
+              <Route path="/" element={<MainNews />} />
+              <Route path="/mlb" element={<Board title="MLB" />} />
+              <Route path="/npb" element={<Board title="NPB" />} />
+              <Route path="/kbo" element={<Board title="KBO" />} />
+              <Route path="/news" element={<Board title="NEWS" />} />
+              <Route path="/others" element={<Board title="OTHERS" />} />
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="/signup" element={<SignUpPage />} />
+              <Route path="/post/:id" element={<PostDetail />} />
+            </Routes>
+            <RightBanner />
+          </div>
+        </BrowserRouter>
+      </PostProvider>
+    </UserProvider>
   );
 }
