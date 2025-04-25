@@ -1,4 +1,4 @@
-/* styles.css */
+/* ================= Header ================= */
 .header {
   background-color: #ffffff;
   border-bottom: 1px solid #ddd;
@@ -21,6 +21,7 @@
   color: #2c3e50;
 }
 
+/* ================= Navigation ================= */
 .nav {
   display: flex;
 }
@@ -56,6 +57,7 @@
   color: #007bff;
 }
 
+/* ================= Board (게시판) ================= */
 .board {
   background: #fff;
   padding: 20px;
@@ -93,6 +95,41 @@
   border-bottom: 1px solid #eee;
 }
 
+.post-title {
+  color: #333;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.post-title:hover {
+  color: #007bff;
+}
+
+.post-meta {
+  font-size: 13px;
+  color: #888;
+}
+
+.write-button-wrapper {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.write-button {
+  padding: 8px 14px;
+  font-size: 14px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.write-button:hover {
+  background-color: #0056b3;
+}
+
+/* ================= Main News ================= */
 .main-news {
   background: #ffffff;
   padding: 24px;
@@ -157,40 +194,7 @@
   color: #333;
 }
 
-.post-title {
-  color: #333;
-  font-weight: 500;
-  text-decoration: none;
-}
-
-.post-title:hover {
-  color: #007bff;
-}
-
-.post-meta {
-  font-size: 13px;
-  color: #888;
-}
-
-.write-button-wrapper {
-  display: flex;
-  justify-content: flex-end;
-}
-
-.write-button {
-  padding: 8px 14px;
-  font-size: 14px;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-.write-button:hover {
-  background-color: #0056b3;
-}
-
+/* ================= Post Detail (게시글 상세) ================= */
 .post-detail {
   background: #fff;
   padding: 20px;
@@ -250,6 +254,71 @@
   background: #0056b3;
 }
 
+/* ================= Write Post (글쓰기 페이지) ================= */
+.write-post-page {
+  max-width: 700px;
+  margin: 40px auto;
+  background: #ffffff;
+  padding: 32px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.06);
+}
+
+.write-post-page h2 {
+  text-align: center;
+  margin-bottom: 24px;
+  font-size: 24px;
+  color: #2c3e50;
+}
+
+.write-post-page form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.write-post-page input[type="text"],
+.write-post-page textarea,
+.write-post-page select {
+  width: 100%;
+  padding: 12px 14px;
+  background-color: #f9f9f9;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 15px;
+  transition: border-color 0.2s ease;
+}
+
+.write-post-page input[type="text"]:focus,
+.write-post-page textarea:focus,
+.write-post-page select:focus {
+  border-color: #007bff;
+  outline: none;
+}
+
+.write-post-page textarea {
+  min-height: 250px;
+  resize: vertical;
+}
+
+.write-post-page button {
+  padding: 14px;
+  background-color: #007bff;
+  color: white;
+  font-weight: 600;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.2s ease;
+}
+
+.write-post-page button:hover {
+  background-color: #0056b3;
+}
+
+/* ================= Login Page ================= */
 .login-page {
   max-width: 400px;
   margin: 40px auto;
@@ -301,6 +370,7 @@
   background-color: #0056b3;
 }
 
+/* ================= Signup Page ================= */
 .signup-page {
   max-width: 400px;
   margin: 40px auto;
@@ -352,6 +422,7 @@
   background-color: #218838;
 }
 
+/* ================= Welcome & Logout Section ================= */
 .welcome-message {
   font-weight: 500;
   color: #2c3e50;

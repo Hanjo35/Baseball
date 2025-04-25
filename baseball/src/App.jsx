@@ -14,6 +14,7 @@ import RightBanner from "./components/RightBanner";
 import PostDetail from "./pages/PostDetail";
 import LoginPage from "./pages/LoginPage";
 import SignUpPage from "./pages/SignUpPage";
+import WritePost from "./pages/WritePost";
 
 export default function App() {
   const MLB = [
@@ -53,6 +54,7 @@ export default function App() {
               <Route path="/login" element={<LoginPage />} />
               <Route path="/signup" element={<SignUpPage />} />
               <Route path="/post/:id" element={<PostDetail />} />
+              <Route path="/write" element={<WritePost />} />
             </Routes>
             <RightBanner />
           </div>

@@ -1,6 +1,7 @@
+import { UserContext } from "../context/UserContext";
 import React, { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import { PostContext } from "../context/PostContext";
+import { addPost } from "../api/post";
 
 export default function WritePost() {
   const navigate = useNavigate();
@@ -8,18 +9,31 @@ export default function WritePost() {
   const [content, setContent] = useState("");
   const [category, setCategory] = useState("MLB");
 
-  const { addPost } = useContext(PostContext);
+  const { user } = useContext(UserContext);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    addPost(category, { title, content, views: 0, comments: 0 });
-    navigate(`/${category.toLowerCase()}`);
-    console.log("작성된 글:", { title, content, category });
-    alert("작성 완료 (콘솔 확인)");
+
+    if (!title || !content) {
+      alert("제목과 내용을 입력해주세요.");
+      return;
+    }
+
+    const newPost = {
+      title,
+      content,
+      writer: user.nickname,
+    };
+
+    const result = await addPost(newPost);
+    if (result) {
+      alert("게시글이 등록되었습니다!");
+      navigate("/");
+    }
   };
 
   return (
-    <div className="write-post">
+    <div className="write-post-page">
       <h2>글쓰기</h2>
       <form onSubmit={handleSubmit}>
         <label>

@@ -1,6 +1,7 @@
 import React, { useContext } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { PostContext } from "../context/PostContext";
+import { UserContext } from "../context/UserContext";
 
 const titleMap = {
   MLB: "MLB",
@@ -13,10 +14,15 @@ const titleMap = {
 export default function Board({ title }) {
   const navigate = useNavigate();
   const { posts } = useContext(PostContext);
+  const { user } = useContext(UserContext);
   const dynamicPosts = posts[title];
   if (!dynamicPosts) return <div>게시판을 찾을 수 없습니다.</div>;
 
   const handleWrite = () => {
+    if (!user) {
+      alert("글을 작성하려면 로그인해야 합니다.");
+      return;
+    }
     navigate("/write");
   };
 
