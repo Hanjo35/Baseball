@@ -23,6 +23,7 @@ export default function WritePost() {
       title,
       content,
       writer: user.nickname,
+      category: category.toUpperCase(),
     };
 
     const result = await addPost(newPost);
@@ -59,9 +60,9 @@ export default function WritePost() {
             value={category}
             onChange={(e) => setCategory(e.target.value)}
           >
-            <option value="MLB">MLB</option>
             <option value="KBO">KBO</option>
-            <option value="NEWS">NEWS</option>
+            <option value="MLB">MLB</option>
+            <option value="NEWS">NPB</option>
             <option value="OTHERS">자유게시판</option>
           </select>
         </label>

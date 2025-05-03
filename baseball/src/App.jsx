@@ -11,10 +11,10 @@ import TopBanner from "./components/TopBanner";
 import MainNews from "./components/MainNews";
 import Board from "./components/Board";
 import RightBanner from "./components/RightBanner";
-import PostDetail from "./pages/PostDetail";
 import LoginPage from "./pages/LoginPage";
 import SignUpPage from "./pages/SignUpPage";
 import WritePost from "./pages/WritePost";
+import BoardPage from "./pages/BoardPage";
 
 export default function App() {
   const MLB = [
@@ -53,8 +53,8 @@ export default function App() {
               <Route path="/others" element={<Board title="OTHERS" />} />
               <Route path="/login" element={<LoginPage />} />
               <Route path="/signup" element={<SignUpPage />} />
-              <Route path="/post/:id" element={<PostDetail />} />
               <Route path="/write" element={<WritePost />} />
+              <Route path="/:category" element={<BoardPage />} />
             </Routes>
             <RightBanner />
           </div>
