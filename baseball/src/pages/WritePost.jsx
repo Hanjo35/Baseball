@@ -1,18 +1,20 @@
-import { UserContext } from "../context/UserContext";
 import React, { useState, useContext } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
+import { UserContext } from "../context/UserContext";
 import { addPost } from "../api/post";
 
 export default function WritePost() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const { user } = useContext(UserContext);
+
+  const category = location.state?.category?.toUpperCase() || "MLB";
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
-  const [category, setCategory] = useState("MLB");
-
-  const { user } = useContext(UserContext);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log("handleSubmit 호출됨");
 
     if (!title || !content) {
       alert("제목과 내용을 입력해주세요.");
@@ -22,20 +24,25 @@ export default function WritePost() {
     const newPost = {
       title,
       content,
-      writer: user.nickname,
-      category: category.toUpperCase(),
+      writer: user?.nickname || "익명",
+      category,
     };
 
+    console.log("addPost 요청:", newPost);
     const result = await addPost(newPost);
+    console.log("addPost 결과:", result);
+
     if (result) {
       alert("게시글이 등록되었습니다!");
-      navigate("/");
+      navigate(`/${category.toLowerCase()}`);
+    } else {
+      alert("게시글 등록 실패!");
     }
   };
 
   return (
     <div className="write-post-page">
-      <h2>글쓰기</h2>
+      <h2>글쓰기 - {category}</h2>
       <form onSubmit={handleSubmit}>
         <label>
           제목:
@@ -53,18 +60,6 @@ export default function WritePost() {
             onChange={(e) => setContent(e.target.value)}
             required
           />
-        </label>
-        <label>
-          게시판:
-          <select
-            value={category}
-            onChange={(e) => setCategory(e.target.value)}
-          >
-            <option value="KBO">KBO</option>
-            <option value="MLB">MLB</option>
-            <option value="NEWS">NPB</option>
-            <option value="OTHERS">자유게시판</option>
-          </select>
         </label>
         <button type="submit">작성 완료</button>
       </form>

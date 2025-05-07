@@ -43,7 +43,7 @@ export default function Board({ title }) {
       alert("글을 작성하려면 로그인해야 합니다.");
       return;
     }
-    navigate("/write");
+    navigate("/write", { state: { category: title } });
   };
 
   return (
