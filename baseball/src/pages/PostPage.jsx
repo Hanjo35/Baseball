@@ -15,6 +15,7 @@ export default function PostPage() {
 
   useEffect(() => {
     const fetchPost = async () => {
+      console.log("게시글 ID:", id);
       const { data, error } = await supabase
         .from("posts")
         .select("*")
@@ -23,7 +24,9 @@ export default function PostPage() {
 
       if (error) {
         console.error("게시글 불러오기 실패:", error.message);
+        setPost(null);
       } else {
+        console.log("불러온 게시글:", data);
         setPost(data);
       }
       setLoading(false);
@@ -43,6 +46,10 @@ export default function PostPage() {
   }, [post]);
 
   const handleAddComment = async () => {
+    console.log("댓글 작성 시도됨");
+    console.log("입력된 댓글:", commentInput);
+    console.log("작성 대상 postId:", post?.id);
+
     if (!user) {
       alert("로그인이 필요합니다.");
       return;
@@ -63,15 +70,17 @@ export default function PostPage() {
   };
 
   if (loading) return <div>로딩 중...</div>;
-  if (!post) return <div>게시글을 찾을 수 없습니다.</div>;
+  if (!post) return <div>게시글을 찾을 수 없습니다. (id: {id})</div>;
 
   return (
-    <div className="post-page">
+    <div className="post-detail">
       <h2>{post.title}</h2>
-      <p>{post.content}</p>
-      <div className="post-meta">
+      <div className="post-meta-bar">
         <span>작성자: {post.writer}</span>
         <span> | 작성일: {new Date(post.created_at).toLocaleString()}</span>
+      </div>
+      <div className="post-content">
+        <p>{post.content}</p>
       </div>
       <div className="comment-section">
         <h3>댓글</h3>

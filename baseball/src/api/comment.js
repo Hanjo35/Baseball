@@ -18,13 +18,18 @@ export const fetchComments = async (postId) => {
 
 // 댓글 추가하기
 export const addComment = async ({ postId, content, writer }) => {
-  const { data, error } = await supabase.from("comments").insert([
-    {
-      post_id: postId,
-      content,
-      writer,
-    },
-  ]);
+  const { data, error } = await supabase
+    .from("comments")
+    .insert([
+      {
+        post_id: postId,
+        content,
+        writer,
+      },
+    ])
+    .select();
+
+  console.log("댓글 저장 성공:", data);
 
   if (error) {
     console.error("댓글 작성 실패:", error.message);

@@ -9,7 +9,8 @@ export const addPost = async ({ title, content, writer, category }) => {
   });
   const { data, error } = await supabase
     .from("posts")
-    .insert([{ title, content, writer, category }]);
+    .insert([{ title, content, writer, category }])
+    .select();
   console.log("Supabase 응답 데이터:", data);
 
   if (error) {

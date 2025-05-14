@@ -27,6 +27,12 @@ export default function WritePost() {
       writer: user?.nickname || "익명",
       category,
     };
+    console.log("newPost 구성 내용:", {
+      title,
+      content,
+      writer: user?.nickname,
+      category,
+    });
 
     console.log("addPost 요청:", newPost);
     const result = await addPost(newPost);
