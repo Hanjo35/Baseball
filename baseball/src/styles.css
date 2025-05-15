@@ -556,3 +556,47 @@
   border-bottom: 1px solid #eee;
   padding-bottom: 12px;
 }
+
+.delete-button.small-faded {
+  background: none;
+  color: #aaa;
+  font-size: 13px;
+  border: none;
+  padding: 4px 8px;
+  cursor: pointer;
+}
+
+.delete-button.small-faded:hover {
+  color: #555;
+  text-decoration: underline;
+}
+
+.delete-button.right-align {
+  display: block;
+  margin-left: auto;
+  margin-top: -16px;
+  margin-bottom: 12px;
+}
+
+.edit-button.small-faded {
+  background: none;
+  color: #aaa;
+  font-size: 13px;
+  border: none;
+  padding: 4px 8px;
+  cursor: pointer;
+  margin-right: 8px;
+}
+
+.edit-button.small-faded:hover {
+  color: #555;
+  text-decoration: underline;
+}
+
+.post-action-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: -16px;
+  margin-bottom: 12px;
+}

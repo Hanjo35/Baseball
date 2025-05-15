@@ -2,7 +2,7 @@
 import React, { useEffect, useState, useContext } from "react";
 import { UserContext } from "../context/UserContext";
 import { fetchComments, addComment } from "../api/comment";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { supabase } from "../supabase";
 
 export default function PostPage() {
@@ -12,6 +12,21 @@ export default function PostPage() {
   const { user } = useContext(UserContext);
   const [comments, setComments] = useState([]);
   const [commentInput, setCommentInput] = useState("");
+  const navigate = useNavigate();
+
+  const handleDeletePost = async () => {
+    const confirmed = window.confirm("정말 이 게시글을 삭제하시겠습니까?");
+    if (!confirmed) return;
+
+    const { error } = await supabase.from("posts").delete().eq("id", id);
+    if (error) {
+      console.error("게시글 삭제 실패:", error.message);
+      alert("삭제 중 오류가 발생했습니다.");
+    } else {
+      alert("게시글이 삭제되었습니다.");
+      navigate("/");
+    }
+  };
 
   useEffect(() => {
     const fetchPost = async () => {
@@ -79,6 +94,22 @@ export default function PostPage() {
         <span>작성자: {post.writer}</span>
         <span> | 작성일: {new Date(post.created_at).toLocaleString()}</span>
       </div>
+      {user?.nickname === post.writer && (
+        <div className="post-action-buttons">
+          <button
+            onClick={() => navigate(`/edit/${id}`)}
+            className="edit-button small-faded"
+          >
+            수정
+          </button>
+          <button
+            onClick={handleDeletePost}
+            className="delete-button small-faded"
+          >
+            삭제
+          </button>
+        </div>
+      )}
       <div className="post-content">
         <p>{post.content}</p>
       </div>

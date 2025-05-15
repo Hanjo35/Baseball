@@ -16,6 +16,7 @@ import SignUpPage from "./pages/SignUpPage";
 import WritePost from "./pages/WritePost";
 import BoardPage from "./pages/BoardPage";
 import PostPage from "./pages/PostPage";
+import EditPost from "./pages/EditPost";
 
 export default function App() {
   const MLB = [
@@ -57,6 +58,7 @@ export default function App() {
               <Route path="/write" element={<WritePost />} />
               <Route path="/post/:id" element={<PostPage />} />
               <Route path="/:category" element={<BoardPage />} />
+              <Route path="/edit/:id" element={<EditPost />} />
             </Routes>
             <RightBanner />
           </div>
