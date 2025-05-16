@@ -48,11 +48,6 @@ export default function App() {
             <TopBanner />
             <Routes>
               <Route path="/" element={<MainNews />} />
-              <Route path="/mlb" element={<Board title="MLB" />} />
-              <Route path="/npb" element={<Board title="NPB" />} />
-              <Route path="/kbo" element={<Board title="KBO" />} />
-              <Route path="/news" element={<Board title="NEWS" />} />
-              <Route path="/others" element={<Board title="OTHERS" />} />
               <Route path="/login" element={<LoginPage />} />
               <Route path="/signup" element={<SignUpPage />} />
               <Route path="/write" element={<WritePost />} />

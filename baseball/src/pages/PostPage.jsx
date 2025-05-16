@@ -12,6 +12,24 @@ export default function PostPage() {
   const { user } = useContext(UserContext);
   const [comments, setComments] = useState([]);
   const [commentInput, setCommentInput] = useState("");
+
+  const handleDeleteComment = async (commentId) => {
+    const confirmed = window.confirm("이 댓글을 삭제하시겠습니까?");
+    if (!confirmed) return;
+
+    const { error } = await supabase
+      .from("comments")
+      .delete()
+      .eq("id", commentId);
+    if (error) {
+      console.error("댓글 삭제 실패:", error.message);
+    } else {
+      setComments((prevComments) =>
+        prevComments.filter((cmt) => cmt.id !== commentId)
+      );
+    }
+  };
+
   const navigate = useNavigate();
 
   const handleDeletePost = async () => {
@@ -25,6 +43,20 @@ export default function PostPage() {
     } else {
       alert("게시글이 삭제되었습니다.");
       navigate("/");
+    }
+  };
+
+  const handleLikeClick = async () => {
+    const { data, error } = await supabase
+      .from("posts")
+      .update({ likes: (post.likes || 0) + 1 })
+      .eq("id", post.id)
+      .select();
+
+    if (error) {
+      console.error("좋아요 실패:", error.message);
+    } else {
+      setPost(data[0]);
     }
   };
 
@@ -43,6 +75,11 @@ export default function PostPage() {
       } else {
         console.log("불러온 게시글:", data);
         setPost(data);
+        // Increment the view count after successfully loading the post
+        await supabase
+          .from("posts")
+          .update({ views: (data.views || 0) + 1 })
+          .eq("id", id);
       }
       setLoading(false);
     };
@@ -113,14 +150,83 @@ export default function PostPage() {
       <div className="post-content">
         <p>{post.content}</p>
       </div>
+      <div
+        className="post-like-bar"
+        style={{ textAlign: "center", marginTop: "24px" }}
+      >
+        <button onClick={handleLikeClick}>❤️ 좋아요 {post.likes || 0}</button>
+      </div>
       <div className="comment-section">
-        <h3>댓글</h3>
+        <h3>댓글 ({comments.length})</h3>
         <ul>
           {comments.map((cmt) => (
             <li key={cmt.id}>
               <strong>{cmt.writer}</strong>: {cmt.content}
               <br />
               <small>{new Date(cmt.created_at).toLocaleString()}</small>
+              <span style={{ marginLeft: "8px", color: "#999" }}>
+                ❤️ {cmt.likes || 0}
+              </span>
+              <button
+                onClick={async () => {
+                  const { data: existingLike } = await supabase
+                    .from("comment_likes")
+                    .select("*")
+                    .eq("comment_id", cmt.id)
+                    .eq("user", user.nickname)
+                    .maybeSingle();
+
+                  if (existingLike) {
+                    alert("이미 좋아요를 눌렀습니다.");
+                    return;
+                  }
+
+                  const { error: insertError } = await supabase
+                    .from("comment_likes")
+                    .insert([{ comment_id: cmt.id, user: user.nickname }]);
+
+                  if (insertError) {
+                    console.error(
+                      "좋아요 기록 저장 실패:",
+                      insertError.message
+                    );
+                    return;
+                  }
+
+                  const { data, error } = await supabase
+                    .from("comments")
+                    .update({ likes: (cmt.likes || 0) + 1 })
+                    .eq("id", cmt.id)
+                    .select();
+
+                  console.log("좋아요 증가 전 likes 값:", cmt.likes);
+                  console.log("Supabase update 응답:", data);
+                  console.log("Supabase update 에러:", error);
+
+                  if (!error && data && data.length > 0) {
+                    setComments((prev) =>
+                      prev.map((item) =>
+                        item.id === cmt.id
+                          ? { ...item, likes: data[0].likes }
+                          : item
+                      )
+                    );
+                  }
+                }}
+                className="delete-button small-faded"
+                style={{ marginLeft: "6px", fontSize: "12px", color: "#222" }}
+              >
+                좋아요
+              </button>
+              {user?.nickname === cmt.writer && (
+                <button
+                  onClick={() => handleDeleteComment(cmt.id)}
+                  className="delete-button small-faded"
+                  style={{ marginLeft: "8px", fontSize: "12px" }}
+                >
+                  삭제
+                </button>
+              )}
             </li>
           ))}
         </ul>

@@ -11,18 +11,24 @@ const titleMap = {
   OTHERS: "자유게시판",
 };
 
-export default function Board({ title }) {
+export default function Board({ title, searchTerm }) {
   const navigate = useNavigate();
   const { user } = useContext(UserContext);
   const [dynamicPosts, setDynamicPosts] = useState([]);
 
   useEffect(() => {
     const fetchPosts = async () => {
-      const { data, error } = await supabase
+      let query = supabase
         .from("posts")
         .select("*")
         .eq("category", title.toUpperCase())
         .order("created_at", { ascending: false });
+
+      if (searchTerm && searchTerm.trim() !== "") {
+        query = query.ilike("title", `%${searchTerm}%`);
+      }
+
+      const { data, error } = await query;
 
       console.log("Board title prop:", title);
       console.log("Filtering category (toUpperCase):", title.toUpperCase());
@@ -31,12 +37,30 @@ export default function Board({ title }) {
       if (error) {
         console.error("게시글 불러오기 실패:", error.message);
       } else {
-        setDynamicPosts(data);
+        const postsWithComments = await Promise.all(
+          data.map(async (post) => {
+            const { count, error: countError } = await supabase
+              .from("comments")
+              .select("*", { count: "exact", head: true })
+              .eq("post_id", post.id);
+
+            if (countError) {
+              console.error("댓글 수 계산 실패:", countError.message);
+            }
+
+            return {
+              ...post,
+              commentCount: count || 0,
+            };
+          })
+        );
+
+        setDynamicPosts(postsWithComments);
       }
     };
 
     fetchPosts();
-  }, [title]);
+  }, [title, searchTerm]);
 
   const handleWrite = () => {
     if (!user) {
@@ -60,7 +84,13 @@ export default function Board({ title }) {
                   {post.title}
                 </Link>
                 <span className="post-meta">
-                  [{post.comments}] / 조회수 {post.views}
+                  댓글&nbsp;{post.commentCount} / 조회수 {post.views || 0}
+                </span>
+                <span
+                  className="post-likes"
+                  style={{ float: "right", color: "#999" }}
+                >
+                  ♥ {post.likes || 0}
                 </span>
               </li>
             ))}
