@@ -17,23 +17,33 @@ export const fetchComments = async (postId) => {
 };
 
 // 댓글 추가하기
-export const addComment = async ({ postId, content, writer }) => {
-  const { data, error } = await supabase
-    .from("comments")
-    .insert([
-      {
-        post_id: postId,
-        content,
-        writer,
-      },
-    ])
-    .select();
+export const addComment = async ({
+  postId,
+  content,
+  writer,
+  parentId = null,
+}) => {
+  try {
+    const { data, error } = await supabase
+      .from("comments")
+      .insert([
+        {
+          post_id: postId,
+          content,
+          writer,
+          parent_id: parentId,
+        },
+      ])
+      .select();
 
-  console.log("댓글 저장 성공:", data);
+    if (error) {
+      console.error("댓글 작성 실패:", error.message);
+      return null;
+    }
 
-  if (error) {
-    console.error("댓글 작성 실패:", error.message);
+    return data[0]; // return the inserted comment object
+  } catch (err) {
+    console.error("댓글 insert 중 예외 발생:", err);
     return null;
   }
-  return data;
 };

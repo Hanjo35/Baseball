@@ -12,6 +12,7 @@ export default function PostPage() {
   const { user } = useContext(UserContext);
   const [comments, setComments] = useState([]);
   const [commentInput, setCommentInput] = useState("");
+  const [replyTo, setReplyTo] = useState(null);
 
   const handleDeleteComment = async (commentId) => {
     const confirmed = window.confirm("이 댓글을 삭제하시겠습니까?");
@@ -97,30 +98,6 @@ export default function PostPage() {
     fetchAndSetComments();
   }, [post]);
 
-  const handleAddComment = async () => {
-    console.log("댓글 작성 시도됨");
-    console.log("입력된 댓글:", commentInput);
-    console.log("작성 대상 postId:", post?.id);
-
-    if (!user) {
-      alert("로그인이 필요합니다.");
-      return;
-    }
-    if (!commentInput.trim()) return;
-
-    const result = await addComment({
-      postId: post.id,
-      content: commentInput,
-      writer: user.nickname,
-    });
-
-    if (result) {
-      const updatedComments = await fetchComments(post.id);
-      setComments(updatedComments);
-      setCommentInput("");
-    }
-  };
-
   if (loading) return <div>로딩 중...</div>;
   if (!post) return <div>게시글을 찾을 수 없습니다. (id: {id})</div>;
 
@@ -159,83 +136,228 @@ export default function PostPage() {
       <div className="comment-section">
         <h3>댓글 ({comments.length})</h3>
         <ul>
-          {comments.map((cmt) => (
-            <li key={cmt.id}>
-              <strong>{cmt.writer}</strong>: {cmt.content}
-              <br />
-              <small>{new Date(cmt.created_at).toLocaleString()}</small>
-              <span style={{ marginLeft: "8px", color: "#999" }}>
-                ❤️ {cmt.likes || 0}
-              </span>
-              <button
-                onClick={async () => {
-                  const { data: existingLike } = await supabase
-                    .from("comment_likes")
-                    .select("*")
-                    .eq("comment_id", cmt.id)
-                    .eq("user", user.nickname)
-                    .maybeSingle();
-
-                  if (existingLike) {
-                    alert("이미 좋아요를 눌렀습니다.");
-                    return;
-                  }
-
-                  const { error: insertError } = await supabase
-                    .from("comment_likes")
-                    .insert([{ comment_id: cmt.id, user: user.nickname }]);
-
-                  if (insertError) {
-                    console.error(
-                      "좋아요 기록 저장 실패:",
-                      insertError.message
-                    );
-                    return;
-                  }
-
-                  const { data, error } = await supabase
-                    .from("comments")
-                    .update({ likes: (cmt.likes || 0) + 1 })
-                    .eq("id", cmt.id)
-                    .select();
-
-                  console.log("좋아요 증가 전 likes 값:", cmt.likes);
-                  console.log("Supabase update 응답:", data);
-                  console.log("Supabase update 에러:", error);
-
-                  if (!error && data && data.length > 0) {
-                    setComments((prev) =>
-                      prev.map((item) =>
-                        item.id === cmt.id
-                          ? { ...item, likes: data[0].likes }
-                          : item
-                      )
-                    );
-                  }
-                }}
-                className="delete-button small-faded"
-                style={{ marginLeft: "6px", fontSize: "12px", color: "#222" }}
-              >
-                좋아요
-              </button>
-              {user?.nickname === cmt.writer && (
+          {comments
+            .filter((cmt) => !cmt.parent_id)
+            .map((cmt) => (
+              <li key={cmt.id}>
+                <strong>{cmt.writer}</strong>: {cmt.content}
+                <br />
+                <small>{new Date(cmt.created_at).toLocaleString()}</small>
+                <span style={{ marginLeft: "8px", color: "#999" }}>
+                  ❤️ {cmt.likes || 0}
+                </span>
                 <button
-                  onClick={() => handleDeleteComment(cmt.id)}
+                  onClick={async () => {
+                    const { data: existingLike } = await supabase
+                      .from("comments_likes")
+                      .select("*")
+                      .eq("comment_id", cmt.id)
+                      .eq("user", user.nickname)
+                      .maybeSingle();
+
+                    if (existingLike) {
+                      alert("이미 좋아요를 눌렀습니다.");
+                      return;
+                    }
+
+                    const { error: insertError } = await supabase
+                      .from("comments_likes")
+                      .insert([{ comment_id: cmt.id, user: user.nickname }]);
+
+                    if (insertError) {
+                      console.error(
+                        "좋아요 기록 저장 실패:",
+                        insertError.message
+                      );
+                      return;
+                    }
+
+                    const { data, error } = await supabase
+                      .from("comments")
+                      .update({ likes: (cmt.likes || 0) + 1 })
+                      .eq("id", cmt.id)
+                      .select();
+
+                    if (!error && data && data.length > 0) {
+                      setComments((prev) =>
+                        prev.map((item) =>
+                          item.id === cmt.id
+                            ? { ...item, likes: data[0].likes }
+                            : item
+                        )
+                      );
+                    }
+                  }}
                   className="delete-button small-faded"
-                  style={{ marginLeft: "8px", fontSize: "12px" }}
+                  style={{ marginLeft: "6px", fontSize: "12px", color: "#222" }}
                 >
-                  삭제
+                  좋아요
                 </button>
-              )}
-            </li>
-          ))}
+                {user?.nickname === cmt.writer && (
+                  <button
+                    onClick={() => handleDeleteComment(cmt.id)}
+                    className="delete-button small-faded"
+                    style={{ marginLeft: "8px", fontSize: "12px" }}
+                  >
+                    삭제
+                  </button>
+                )}
+                <button
+                  onClick={() => setReplyTo(cmt)}
+                  className="small-faded"
+                  style={{ marginLeft: "10px", fontSize: "12px" }}
+                >
+                  답글 달기
+                </button>
+                <ul style={{ marginLeft: "20px" }}>
+                  {comments
+                    .filter((child) => child.parent_id === cmt.id)
+                    .map((child) => (
+                      <li
+                        key={child.id}
+                        style={{
+                          marginLeft: "20px",
+                          borderLeft: "2px solid #ddd",
+                          paddingLeft: "10px",
+                          marginTop: "8px",
+                          backgroundColor: "#f9f9f9",
+                          fontSize: "14px",
+                          color: "#555",
+                          borderRadius: "4px",
+                          paddingBottom: "8px",
+                          paddingTop: "4px",
+                        }}
+                      >
+                        <div style={{ fontWeight: "bold", color: "#333" }}>
+                          ↳ {child.writer}님이 <em>{cmt.writer}</em> 님에게 남긴
+                          대댓글
+                        </div>
+                        <div
+                          style={{
+                            fontSize: "15px",
+                            fontWeight: "normal",
+                            marginTop: "4px",
+                          }}
+                        >
+                          {child.content}
+                        </div>
+                        <br />
+                        <small>
+                          {new Date(child.created_at).toLocaleString()}
+                        </small>
+                        <span style={{ marginLeft: "8px", color: "#999" }}>
+                          ❤️ {child.likes || 0}
+                        </span>
+                        <button
+                          onClick={async () => {
+                            const { data: existingLike } = await supabase
+                              .from("comments_likes")
+                              .select("*")
+                              .eq("comment_id", child.id)
+                              .eq("user", user.nickname)
+                              .maybeSingle();
+
+                            if (existingLike) {
+                              alert("이미 좋아요를 눌렀습니다.");
+                              return;
+                            }
+
+                            const { error: insertError } = await supabase
+                              .from("comments_likes")
+                              .insert([
+                                { comment_id: child.id, user: user.nickname },
+                              ]);
+
+                            if (insertError) {
+                              console.error(
+                                "좋아요 기록 저장 실패:",
+                                insertError.message
+                              );
+                              return;
+                            }
+
+                            const { data, error } = await supabase
+                              .from("comments")
+                              .update({ likes: (child.likes || 0) + 1 })
+                              .eq("id", child.id)
+                              .select();
+
+                            if (!error && data && data.length > 0) {
+                              setComments((prev) =>
+                                prev.map((item) =>
+                                  item.id === child.id
+                                    ? { ...item, likes: data[0].likes }
+                                    : item
+                                )
+                              );
+                            }
+                          }}
+                          className="delete-button small-faded"
+                          style={{
+                            marginLeft: "6px",
+                            fontSize: "12px",
+                            color: "#222",
+                          }}
+                        >
+                          좋아요
+                        </button>
+                        {user?.nickname === child.writer && (
+                          <button
+                            onClick={() => handleDeleteComment(child.id)}
+                            className="delete-button small-faded"
+                            style={{ marginLeft: "8px", fontSize: "12px" }}
+                          >
+                            삭제
+                          </button>
+                        )}
+                      </li>
+                    ))}
+                </ul>
+              </li>
+            ))}
         </ul>
+        {replyTo && (
+          <div>
+            <p style={{ fontSize: "14px", marginBottom: "4px" }}>
+              ↪ {replyTo.writer}에게 답글 작성 중
+              <button
+                onClick={() => setReplyTo(null)}
+                style={{ marginLeft: "10px", fontSize: "12px", color: "gray" }}
+              >
+                취소
+              </button>
+            </p>
+          </div>
+        )}
         <textarea
           placeholder="댓글을 입력하세요"
           value={commentInput}
           onChange={(e) => setCommentInput(e.target.value)}
         />
-        <button onClick={handleAddComment}>댓글 작성</button>
+        <button
+          onClick={async () => {
+            if (!user) {
+              alert("로그인이 필요합니다.");
+              return;
+            }
+            if (!commentInput.trim()) return;
+
+            const result = await addComment({
+              postId: post.id,
+              content: commentInput,
+              writer: user.nickname,
+              parentId: replyTo?.id || null,
+            });
+            if (result) {
+              const updatedComments = await fetchComments(post.id);
+              setComments(updatedComments);
+              setCommentInput("");
+              setReplyTo(null);
+            }
+          }}
+        >
+          댓글 작성
+        </button>
       </div>
     </div>
   );
