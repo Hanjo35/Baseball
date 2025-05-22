@@ -213,21 +213,7 @@ export default function PostPage() {
                   {comments
                     .filter((child) => child.parent_id === cmt.id)
                     .map((child) => (
-                      <li
-                        key={child.id}
-                        style={{
-                          marginLeft: "20px",
-                          borderLeft: "2px solid #ddd",
-                          paddingLeft: "10px",
-                          marginTop: "8px",
-                          backgroundColor: "#f9f9f9",
-                          fontSize: "14px",
-                          color: "#555",
-                          borderRadius: "4px",
-                          paddingBottom: "8px",
-                          paddingTop: "4px",
-                        }}
-                      >
+                      <li key={child.id} className="reply-item">
                         <div style={{ fontWeight: "bold", color: "#333" }}>
                           ↳ {child.writer}님이 <em>{cmt.writer}</em> 님에게 남긴
                           대댓글
@@ -236,7 +222,7 @@ export default function PostPage() {
                           style={{
                             fontSize: "15px",
                             fontWeight: "normal",
-                            marginTop: "4px",
+                            marginTop: "6px",
                           }}
                         >
                           {child.content}

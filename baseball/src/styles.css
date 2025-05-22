@@ -610,3 +610,30 @@
   margin-bottom: 16px;
   box-sizing: border-box;
 }
+
+.reply-item {
+  margin-left: 20px;
+  padding-left: 12px;
+  border-left: 2px solid #eee;
+  font-size: 14px;
+  color: #444;
+}
+
+.main-content {
+  display: flex;
+  flex-direction: row;
+  gap: 24px;
+  flex-grow: 1;
+  width: 100%;
+}
+
+.right-banner {
+  width: 250px;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.left-section {
+  flex: 1;
+  min-width: 0;
+}

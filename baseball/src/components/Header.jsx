@@ -28,7 +28,7 @@ export default function Header() {
               <Link to="/news">뉴스</Link>
             </li>
             <li>
-              <Link to="/others">자유게시판</Link>
+              <Link to="/others">덕아웃톡</Link>
             </li>
             {user ? (
               <>
