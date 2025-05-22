@@ -48,16 +48,52 @@ export default function PostPage() {
   };
 
   const handleLikeClick = async () => {
-    const { data, error } = await supabase
-      .from("posts")
-      .update({ likes: (post.likes || 0) + 1 })
-      .eq("id", post.id)
-      .select();
+    if (!user) {
+      alert("로그인이 필요합니다.");
+      return;
+    }
 
-    if (error) {
-      console.error("좋아요 실패:", error.message);
-    } else {
-      setPost(data[0]);
+    try {
+      const { data: existingLike, error: checkError } = await supabase
+        .from("posts_likes")
+        .select("*")
+        .eq("post_id", post.id)
+        .eq("user", user.nickname)
+        .maybeSingle();
+
+      if (checkError) {
+        console.error("좋아요 확인 중 오류:", checkError.message);
+        return;
+      }
+
+      if (existingLike) {
+        alert("이미 좋아요를 눌렀습니다.");
+        return;
+      }
+
+      const { error: insertError } = await supabase
+        .from("posts_likes")
+        .insert([{ post_id: post.id, user: user.nickname }]);
+
+      if (insertError) {
+        console.error("좋아요 기록 저장 실패:", insertError.message);
+        alert("좋아요 기록 저장 실패");
+        return;
+      }
+
+      const { data, error } = await supabase
+        .from("posts")
+        .update({ likes: (post.likes || 0) + 1 })
+        .eq("id", post.id)
+        .select();
+
+      if (error) {
+        console.error("좋아요 실패:", error.message);
+      } else {
+        setPost(data[0]);
+      }
+    } catch (err) {
+      console.error("예외 발생:", err);
     }
   };
 

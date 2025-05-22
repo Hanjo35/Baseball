@@ -8,7 +8,7 @@ const titleMap = {
   NPB: "NPB",
   KBO: "KBO",
   NEWS: "뉴스",
-  OTHERS: "자유게시판",
+  OTHERS: "덕아웃톡",
 };
 
 export default function Board({ title, searchTerm }) {

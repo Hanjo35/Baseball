@@ -9,17 +9,17 @@ export default function Header() {
   return (
     <header className="header">
       <div className="header-container">
-        <div className="logo">SPORTSPARK</div>
+        <Link to="/" className="logo">
+          <img
+            src="src/assets/야구야놀자.png"
+            alt="야구야놀자 로고"
+            style={{ height: "100px" }}
+          />
+        </Link>
         <nav className="nav">
           <ul className="nav-list">
             <li>
-              <Link to="/">홈</Link>
-            </li>
-            <li>
               <Link to="/mlb">MLB</Link>
-            </li>
-            <li>
-              <Link to="/npb">NPB</Link>
             </li>
             <li>
               <Link to="/kbo">KBO</Link>

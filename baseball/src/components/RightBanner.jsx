@@ -7,7 +7,7 @@ export default function RightBanner() {
   const [popularPosts, setPopularPosts] = useState([]);
 
   // Tabs for filtering
-  const tabs = ["MLB", "KBO", "NPB", "뉴스", "덕아웃톡"];
+  const tabs = ["MLB", "KBO", "덕아웃톡"];
   const [selectedTab, setSelectedTab] = useState("MLB");
 
   useEffect(() => {
@@ -53,7 +53,7 @@ export default function RightBanner() {
               onClick={() => setSelectedTab(tab)}
               style={{
                 padding: "2px 6px",
-                fontSize: "12px",
+                fontSize: "16px",
                 border: "1px solid #ccc",
                 borderRadius: "4px",
                 backgroundColor: selectedTab === tab ? "#eee" : "#fff",
@@ -66,8 +66,8 @@ export default function RightBanner() {
         </div>
         <PopularPosts
           posts={
-            selectedTab === "전체"
-              ? popularPosts
+            selectedTab === "덕아웃톡"
+              ? popularPosts.filter((post) => post.category === "OTHERS")
               : popularPosts.filter((post) => post.category === selectedTab)
           }
         />
