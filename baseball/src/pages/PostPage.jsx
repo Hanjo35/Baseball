@@ -58,7 +58,7 @@ export default function PostPage() {
         .from("posts_likes")
         .select("*")
         .eq("post_id", post.id)
-        .eq("user", user.nickname)
+        .eq("nickname", user.nickname)
         .maybeSingle();
 
       if (checkError) {
@@ -73,7 +73,7 @@ export default function PostPage() {
 
       const { error: insertError } = await supabase
         .from("posts_likes")
-        .insert([{ post_id: post.id, user: user.nickname }]);
+        .insert([{ post_id: post.id, nickname: user.nickname }]);
 
       if (insertError) {
         console.error("좋아요 기록 저장 실패:", insertError.message);
@@ -188,7 +188,7 @@ export default function PostPage() {
                       .from("comments_likes")
                       .select("*")
                       .eq("comment_id", cmt.id)
-                      .eq("user", user.nickname)
+                      .eq("nickname", user.nickname)
                       .maybeSingle();
 
                     if (existingLike) {
@@ -198,7 +198,9 @@ export default function PostPage() {
 
                     const { error: insertError } = await supabase
                       .from("comments_likes")
-                      .insert([{ comment_id: cmt.id, user: user.nickname }]);
+                      .insert([
+                        { comment_id: cmt.id, nickname: user.nickname },
+                      ]);
 
                     if (insertError) {
                       console.error(
@@ -276,7 +278,7 @@ export default function PostPage() {
                               .from("comments_likes")
                               .select("*")
                               .eq("comment_id", child.id)
-                              .eq("user", user.nickname)
+                              .eq("nickname", user.nickname)
                               .maybeSingle();
 
                             if (existingLike) {
@@ -287,7 +289,10 @@ export default function PostPage() {
                             const { error: insertError } = await supabase
                               .from("comments_likes")
                               .insert([
-                                { comment_id: child.id, user: user.nickname },
+                                {
+                                  comment_id: child.id,
+                                  nickname: user.nickname,
+                                },
                               ]);
 
                             if (insertError) {

@@ -1,26 +1,35 @@
 // src/pages/LoginPage.jsx
-import React, { useState, useContext } from "react";
+import React, { useState } from "react";
 import { UserContext } from "../context/UserContext";
 import { useNavigate } from "react-router-dom";
+import { supabase } from "../supabase";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const { login } = useContext(UserContext);
+  // const { login } = useContext(UserContext);
   const navigate = useNavigate();
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    // console.log("로그인 시도:", { email, password });
-    // alert("로그인 로직은 아직 연결되지 않았습니다.");
-    // login({ nickname: "한조", email });
-    if (email === "admin@test.com" && password === "admin123") {
-      login({ nickname: "관리자", email });
+    try {
+      const { error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+
+      if (error) {
+        alert("로그인 실패: " + error.message);
+        return;
+      }
+
+      // login({ nickname: profile?.nickname || "사용자", email: user.email });
       alert("로그인 성공!");
       navigate("/");
-    } else {
-      alert("이메일 또는 비밀번호가 잘못되었습니다.");
+    } catch (err) {
+      alert("예기치 않은 오류가 발생했습니다.");
+      console.error(err);
     }
   };
 
