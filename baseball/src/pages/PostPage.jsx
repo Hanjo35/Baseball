@@ -158,6 +158,16 @@ export default function PostPage() {
           >
             삭제
           </button>
+          <button
+            onClick={() => {
+              const confirmed = window.confirm("정말 신고하시겠습니까?");
+              if (confirmed) alert("신고가 접수되었습니다.");
+            }}
+            className="delete-button small-faded"
+            style={{ marginLeft: "8px", fontSize: "12px", color: "red" }}
+          >
+            신고
+          </button>
         </div>
       )}
       <div className="post-content">
@@ -167,7 +177,7 @@ export default function PostPage() {
         className="post-like-bar"
         style={{ textAlign: "center", marginTop: "24px" }}
       >
-        <button onClick={handleLikeClick}>❤️ 좋아요 {post.likes || 0}</button>
+        <button onClick={handleLikeClick}>👍 좋아요 {post.likes || 0}</button>
       </div>
       <div className="comment-section">
         <h3>댓글 ({comments.length})</h3>
@@ -240,6 +250,16 @@ export default function PostPage() {
                     삭제
                   </button>
                 )}
+                <button
+                  onClick={() => {
+                    const confirmed = window.confirm("정말 신고하시겠습니까?");
+                    if (confirmed) alert("신고가 접수되었습니다.");
+                  }}
+                  className="delete-button small-faded"
+                  style={{ marginLeft: "8px", fontSize: "12px", color: "red" }}
+                >
+                  신고
+                </button>
                 <button
                   onClick={() => setReplyTo(cmt)}
                   className="small-faded"
@@ -337,6 +357,21 @@ export default function PostPage() {
                             삭제
                           </button>
                         )}
+                        <button
+                          onClick={() => {
+                            const confirmed =
+                              window.confirm("정말 신고하시겠습니까?");
+                            if (confirmed) alert("신고가 접수되었습니다.");
+                          }}
+                          className="delete-button small-faded"
+                          style={{
+                            marginLeft: "8px",
+                            fontSize: "12px",
+                            color: "red",
+                          }}
+                        >
+                          신고
+                        </button>
                       </li>
                     ))}
                 </ul>

@@ -35,6 +35,13 @@ export default function Header() {
                 <li className="welcome-message">
                   {user.nickname}님 환영합니다
                 </li>
+                {user?.is_admin && (
+                  <li>
+                    <Link to="/admin" className="admin-link">
+                      관리자
+                    </Link>
+                  </li>
+                )}
                 <li>
                   <button onClick={logout} className="logout-button">
                     로그아웃

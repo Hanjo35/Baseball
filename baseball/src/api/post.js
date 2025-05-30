@@ -21,3 +21,28 @@ export const addPost = async ({ title, content, writer, category }) => {
 
   return data;
 };
+
+// 신고된 게시글 불러오기
+export const getReportedPosts = async () => {
+  const { data, error } = await supabase
+    .from("posts")
+    .select("*")
+    .eq("reported", true);
+
+  if (error) {
+    console.error("신고된 게시글 불러오기 실패:", error.message);
+    return [];
+  }
+
+  return data;
+};
+
+// 게시글 삭제
+export const deletePostById = async (postId) => {
+  const { error } = await supabase.from("posts").delete().eq("id", postId);
+
+  if (error) {
+    console.error("게시글 삭제 실패:", error.message);
+    alert("게시글 삭제 중 오류 발생!");
+  }
+};

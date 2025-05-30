@@ -16,14 +16,18 @@ export function UserProvider({ children }) {
         console.log("🆔 현재 로그인된 user.id:", user.id);
         const { data: profileData, error: profileError } = await supabase
           .from("profiles")
-          .select("nickname")
+          .select("nickname, is_admin")
           .eq("id", user.id)
           .maybeSingle();
         console.log("📄 profiles에서 불러온 데이터:", profileData);
 
         if (profileData && !profileError) {
           console.log("✅ 불러온 nickname:", profileData.nickname);
-          setUser({ ...user, nickname: profileData.nickname });
+          setUser({
+            ...user,
+            nickname: profileData.nickname,
+            is_admin: profileData.is_admin,
+          });
         } else {
           if (profileData === null) {
             console.warn(

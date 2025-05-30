@@ -17,6 +17,8 @@ import WritePost from "./pages/WritePost";
 import BoardPage from "./pages/BoardPage";
 import PostPage from "./pages/PostPage";
 import EditPost from "./pages/EditPost";
+import AdminPage from "./pages/AdminPage";
+import RequireAdmin from "./components/RequireAdmin";
 
 export default function App() {
   const MLB = [];
@@ -46,6 +48,14 @@ export default function App() {
                   <Route path="/post/:id" element={<PostPage />} />
                   <Route path="/:category" element={<BoardPage />} />
                   <Route path="/edit/:id" element={<EditPost />} />
+                  <Route
+                    path="/admin"
+                    element={
+                      <RequireAdmin>
+                        <AdminPage />
+                      </RequireAdmin>
+                    }
+                  />
                 </Routes>
               </div>
               <RightBanner />
