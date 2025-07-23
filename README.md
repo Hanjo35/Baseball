@@ -6,7 +6,7 @@
 - **목표**: MLB파크 스타일의 커뮤니티 웹사이트 구현
 - **기능**: 게시글, 댓글, 좋아요, 신고, 관리자 페이지 등
 - **기술 스택**:
-  - **Frontend**: React (Vite), Tailwind CSS
+  - **Frontend**: React (Vite), CSS
   - **Backend**: Supabase (Auth, DB, Storage)
   - **인증**: Supabase Auth 기반 로그인/회원가입
 
